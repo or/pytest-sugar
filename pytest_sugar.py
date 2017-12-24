@@ -236,17 +236,18 @@ class SugarTerminalReporter(TerminalReporter):
     def pytest_sessionstart(self, session):
         self._sessionstarttime = py.std.time.time()
         verinfo = ".".join(map(str, sys.version_info[:3]))
-        self.write_line(
-            "Test session starts "
-            "(platform: %s, Python %s, pytest %s, pytest-sugar %s)" % (
-                sys.platform, verinfo, pytest.__version__, __version__,
-            ), bold=True
-        )
-        lines = self.config.hook.pytest_report_header(
-            config=self.config, startdir=self.startdir)
-        lines.reverse()
-        for line in flatten(lines):
-            self.write_line(line)
+        if not self.config.getvalue("quiet"):
+            self.write_line(
+                "Test session starts "
+                "(platform: %s, Python %s, pytest %s, pytest-sugar %s)" % (
+                    sys.platform, verinfo, pytest.__version__, __version__,
+                ), bold=True
+            )
+            lines = self.config.hook.pytest_report_header(
+                config=self.config, startdir=self.startdir)
+            lines.reverse()
+            for line in flatten(lines):
+                self.write_line(line)
 
     def write_fspath_result(self, fspath, res):
         return
